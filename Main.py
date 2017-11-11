@@ -1,11 +1,32 @@
 from pathlib import Path
 from utils import Logger
+from utils import ConsoleListener
 import json
+import re
 
 class LurkBot:
-	def __init__(self, config):
-		print('yay')
-		input('')
+	def __init__(self, config, listener):
+		self.username = config['username']
+		self.channel = config['channel']
+		self.oauth = config['oauth']
+		self.passwd = config['pass']
+		self.ip = config['IP']
+		self.port = config['PORT']
+		self.settings = {}
+		self.keywords = []
+		self.listener = listener
+		self.config = config
+
+		# Save channel settings.
+		settings = config['settings']
+		for setting in settings:
+			self.settings[setting['channel']] = setting
+
+		# Save keywords.
+		keywords = config['keywords'].split(',')
+		for keyword in keywords:
+			self.keywords.append(re.compile('\b' + keyword + '\b'))
+
 
 def Main():
 	if (not Path('./config/config.json').is_file()):
@@ -36,14 +57,24 @@ def Main():
 		config['PORT'] = input()
 
 		# Set an empty array for settings.
-		config['settings'] = '[]'
+		config['settings'] = []
 		# Set keywords to get pinged for.
 		config['keywords'] = config['channel']
 
 		# Save our settings in a config file.
 		open('./config/config.json', 'w').write(json.dumps(config))
 	
-	# Start the bot
-	lurkbot = LurkBot(open('./config/config.json', 'r').read())
+	# Print bot details.
+	Logger.writeLine('')
+	Logger.writeLine('LurkBot Version: 3.0')
+	Logger.writeLine('Creator: ScaniaTV')
+	Logger.writeLine('')
+
+	# Start the console listener.
+	listener = ConsoleListener.ConsoleListener()
+	listener.start()
+
+	# Start the bot.
+	lurkbot = LurkBot(json.loads(open('./config/config.json', 'r').read()), listener)
 
 Main()
