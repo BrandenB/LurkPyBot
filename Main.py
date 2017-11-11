@@ -1,6 +1,9 @@
+# Main script where everything starts.
+
 from pathlib import Path
 from utils import Logger
 from utils import ConsoleListener
+from twitch import Connection
 import json
 import re
 
@@ -27,6 +30,12 @@ class LurkBot:
 		for keyword in keywords:
 			self.keywords.append(re.compile('\b' + keyword + '\b'))
 
+		# Create a new connection.
+		connection = Connection.Connection('wss://irc-ws.chat.twitch.tv')
+		# Give this object to the connection class
+		connection.init(self)
+		# Connect.
+		connection.connect()
 
 def Main():
 	if (not Path('./config/config.json').is_file()):

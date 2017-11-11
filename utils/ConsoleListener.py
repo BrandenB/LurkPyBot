@@ -1,3 +1,5 @@
+# Listener that keeps the console alive.
+
 from threading import Thread
 from time import sleep
 
