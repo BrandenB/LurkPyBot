@@ -2,6 +2,8 @@
 
 from threading import Thread
 from time import sleep
+from utils import Logger
+import sys
 
 class ConsoleListener(Thread):
 	def __init__(self):
@@ -10,8 +12,15 @@ class ConsoleListener(Thread):
 
 	def run(self):
 		while not self.killed:
-			line = input()
-			sleep(0.01)
+			try:
+				line = input()
+
+				if (line == 'exit'):
+					sys.exit(0)
+
+				sleep(0.02)
+			except Exception as ex:
+				Logger.debugLine(ex)
 
 	def kill(self):
 		self.killed = True

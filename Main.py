@@ -4,6 +4,7 @@ from pathlib import Path
 from utils import Logger
 from utils import ConsoleListener
 from twitch import Connection
+import atexit
 import json
 import re
 
@@ -31,13 +32,16 @@ class LurkBot:
 			self.keywords.append(re.compile('\b' + keyword + '\b'))
 
 		# Create a new connection.
-		connection = Connection.Connection('wss://irc-ws.chat.twitch.tv')
+		self.connection = Connection.Connection('wss://irc-ws.chat.twitch.tv')
 		# Give this object to the connection class
-		connection.init(self)
+		self.connection.init(self)
 		# Connect.
-		connection.connect()
+		self.connection.connect()
 
 def Main():
+	# Register our exit hook.
+	atexit.register(onExit)
+
 	if (not Path('./config/config.json').is_file()):
 		config = {}
 
@@ -80,10 +84,23 @@ def Main():
 	Logger.writeLine('')
 
 	# Start the console listener.
+	global listener
 	listener = ConsoleListener.ConsoleListener()
 	listener.start()
 
 	# Start the bot.
+	global lurkbot
 	lurkbot = LurkBot(json.loads(open('./config/config.json', 'r').read()), listener)
+
+def onExit():
+	if (lurkbot != None):
+		Logger.writeLine('Closing connection with Twitch...')
+		lurkbot.connection.close(200, 'Bye');
+
+	if (listener != None):
+		Logger.writeLine('Terminating console listener...')
+		listener.kill()
+
+	Logger.writeLine('Bye.')
 
 Main()

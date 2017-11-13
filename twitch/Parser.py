@@ -7,6 +7,7 @@ def parse(lurkbot, connection, eventHandler, rawMessage):
 		messageParts = str(rawMessage).split(' :', 3)
 		username = ''
 		message = ''
+		channel = ''
 		event = ''
 		tags = {}
 
@@ -39,9 +40,22 @@ def parse(lurkbot, connection, eventHandler, rawMessage):
 		# Get the event.
 		event = '' if messageParts[0].find(' ') == -1 else messageParts[0].split(' ')[1]
 
-		if (event == 'PRIVMSG'):
-			Logger.writeLine(username + ': ' + message)
-		elif (event == '001'):
-			connection.send('JOIN #sodapoppin')
+		# Get the channel.
+		channel = '' if messageParts[0].find('#') == -1 else '#' + messageParts[0].split('#')[1].strip()
+
+		# Handle the event
+		if (event == '001'):
+			eventHandler._001(connection, lurkbot.channel)
+		elif (event == 'PRIVMSG'):
+			eventHandler._privmsg(lurkbot, connection, channel, username, message, tags)
+		elif (event == 'WHISPER'):
+			eventHandler._whisper(lurkbot, connection, channel, username, message, tags)
+		elif (event == 'USERSTATE'):
+			eventHandler._userstate(lurkbot, connection, channel, username, message, tags)
+		elif (event == 'ROOMSTATE'):
+			eventHandler._roomstate(lurkbot, connection, channel, username, message, tags)
+		elif (event == 'USERNOTICE'):
+			eventHandler._usernotice(lurkbot, connection, channel, username, message, tags)
+
 	except Exception as ex:
 		Logger.errorLine('Failed to parse a message from Twitch-IRC: ' + ex)
