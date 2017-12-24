@@ -13,7 +13,7 @@ pip install ws4py && pip install git+https://github.com/dpallot/simple-websocket
 ```
 
 ## Installing Libs on Linux
-- Open CMD and type the following:
+- Type the following in your terminal:
 ```
 sudo pip3.6 install ws4py ; sudo pip3.6 install git+https://github.com/dpallot/simple-websocket-server.git
 ```
