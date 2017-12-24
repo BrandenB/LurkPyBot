@@ -1,13 +1,18 @@
 # Main script where everything starts.
 
+from SimpleWebSocketServer import SimpleWebSocketServer
 from pathlib import Path
 from utils import Logger
 from utils import ConsoleListener
 from twitch import Connection
+from server import SocketServer
+import threading
 import atexit
 import json
 import re
 
+lurkbot = None
+listener = None
 class LurkBot:
 	def __init__(self, config, listener):
 		self.username = config['username']
@@ -29,7 +34,7 @@ class LurkBot:
 		# Save keywords.
 		keywords = config['keywords'].split(',')
 		for keyword in keywords:
-			self.keywords.append(re.compile('\b' + keyword + '\b'))
+			self.keywords.append(re.compile('\\b' + keyword + '\\b'))
 
 		# Create a new connection.
 		self.connection = Connection.Connection('wss://irc-ws.chat.twitch.tv')
@@ -37,6 +42,16 @@ class LurkBot:
 		self.connection.init(self)
 		# Connect.
 		self.connection.connect()
+		# Create a new socket server.
+		self.server = SimpleWebSocketServer(self.ip, int(self.port), SocketServer.SocketServer)
+		# Create a new thread for the socket server
+		self.serverThread = threading.Thread(target=self.server.serveforever)
+		# Make the thread daemon
+		self.serverThread.setDaemon(True)
+		# Set the lurkbot object
+		SocketServer.setLurkBot(self)
+		# Start the thread.
+		self.serverThread.start()
 
 def Main():
 	# Register our exit hook.
@@ -93,9 +108,11 @@ def Main():
 	lurkbot = LurkBot(json.loads(open('./config/config.json', 'r').read()), listener)
 
 def onExit():
+	Logger.writeLine('Socket server closing since the thread is daemon...')
+
 	if (lurkbot != None):
 		Logger.writeLine('Closing connection with Twitch...')
-		lurkbot.connection.close(200, 'Bye');
+		lurkbot.connection.close()
 
 	if (listener != None):
 		Logger.writeLine('Terminating console listener...')

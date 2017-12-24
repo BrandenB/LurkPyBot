@@ -7,7 +7,7 @@ import sys
 
 class ConsoleListener(Thread):
 	def __init__(self):
-		super(ConsoleListener, self).__init__()
+		super().__init__()
 		self.killed = False
 
 	def run(self):
@@ -16,7 +16,7 @@ class ConsoleListener(Thread):
 				line = input()
 
 				if (line == 'exit'):
-					sys.exit(0)
+					sys.exit(1)
 
 				sleep(0.02)
 			except Exception as ex:

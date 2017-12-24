@@ -1,4 +1,5 @@
 # Script that handle the connection with Twitch.
+# pip install ws4py
 
 from ws4py.client.threadedclient import WebSocketClient
 from utils import Logger
@@ -18,12 +19,12 @@ class Connection(WebSocketClient):
 		self.send('NICK ' + self.lurkbot.username)
 
 	def closed(self, code, reason):
-		if (code != 200):
+		if (code != 1000):
 			Logger.writeLine('Connection with Twitch-IRC was lost. Trying to reconnect...')
 		else:
 			Logger.debugLine('Disconnected from Twitch-IRC.')
 
-		Logger.debugLine('Disconnected: [' + str(code) + '] [' + reason + ']')
+		Logger.debugLine('Disconnected: [' + str(code) + '] [' + str(reason) + ']')
 
 	def received_message(self, message):
 		message = str(message)
