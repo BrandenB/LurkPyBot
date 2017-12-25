@@ -26,7 +26,7 @@ class EventHandler:
 				SocketServer.sendToAll(username, message, channel)
 
 		# Check for bits.
-		if 'bits' in tags:
+		if ('bits' in tags) and (channel in lurkbot.settings):
 			settings = lurkbot.settings[channel]
 			if settings['announce_bits'] == 'true':
 				connection.sendMessage(channel, settings["bits_welcome_message"].replace('%NAME%', username).replace('%BITS%', tags['bits']))

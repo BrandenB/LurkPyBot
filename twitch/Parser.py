@@ -58,4 +58,4 @@ def parse(lurkbot, connection, eventHandler, rawMessage):
 			eventHandler._usernotice(lurkbot, connection, channel, username, message, tags)
 
 	except Exception as ex:
-		Logger.errorLine('Failed to parse a message from Twitch-IRC: ' + ex)
+		Logger.errorLine('Failed to parse a message from Twitch-IRC: ' + str(ex))

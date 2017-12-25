@@ -4,7 +4,7 @@ A simple Twitch chat bot that can join multiple channels to log and send message
 ## Requirements
 - Python 3.6 or higher.
 - SimpleWebsocketServer.
-- ws4py
+- ws4py.
 
 ## Installing Libs on Windows
 - Open CMD and type the following:
