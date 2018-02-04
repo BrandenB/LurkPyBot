@@ -41,4 +41,3 @@ class Connection(WebSocketClient):
 	def sendRaw(self, message):
 		Logger.debugLine('[RAW] ' + message)
 		self.send(message)
-		

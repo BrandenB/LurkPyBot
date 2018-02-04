@@ -22,7 +22,7 @@ class EventHandler:
 		# Check if the message has our keyword.
 		keywords = lurkbot.keywords
 		for keyword in keywords:
-			if keyword.match(message):
+			if keyword.match(message.lower()):
 				SocketServer.sendToAll(username, message, channel)
 
 		# Check for bits.
@@ -55,6 +55,6 @@ class EventHandler:
 						connection.sendMessage(channel, settings['subscibers_welcome_message'].replace('%NAME%', tags['login']))
 			elif tags['msg-id'] == 'resub' and settings['announce_re_subscribers'] == 'true':
 				connection.sendMessage(channel, settings['re_subscibers_welcome_message'].replace('%NAME%', tags['login']).replace('%MONTHS%', tags['msg-param-months']))
-			elif tags['msg-id'] == 'subgift' and settings['announce_subscriber_gifts'] == 'true': 
+			elif tags['msg-id'] == 'subgift' and settings['announce_subscriber_gifts'] == 'true':
 				connection.sendMessage(channel, settings['subsciber_gift_welcome_message'].replace('%NAME%', tags['login']).replace('%RECIPIENT%', tags['msg-param-recipient-user-name']))
 
