@@ -23,7 +23,9 @@ class Connection(WebSocketClient):
 			Logger.writeLine('Connection with Twitch-IRC was lost. Trying to reconnect...')
 		else:
 			Logger.debugLine('Disconnected from Twitch-IRC.')
-
+		
+		# Try to connect again.
+		self.connect()
 		Logger.debugLine('Disconnected: [' + str(code) + '] [' + str(reason) + ']')
 
 	def received_message(self, message):
