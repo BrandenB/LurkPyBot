@@ -25,7 +25,7 @@ class Connection(WebSocketClient):
 			Logger.debugLine('Disconnected from Twitch-IRC.')
 		
 		# Try to connect again.
-                self.init(self, self.lurkbot)
+		self.init(self, self.lurkbot)
 		self.connect()
 		Logger.debugLine('Disconnected: [' + str(code) + '] [' + str(reason) + ']')
 
